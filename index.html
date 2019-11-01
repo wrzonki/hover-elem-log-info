@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style media="screen">
+            div{
+                width: 250px;
+                height: 250px;
+                background: cornflowerblue;
+                margin:63px;
+                float: left;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <p>1256498875298</p>
+            <span>Nazwa1</span>
+        </div>
+        <div>
+            <p>412564988asdasd</p>
+            <span>Nazwa2</span>
+        </div>
+        <div>
+            <p>1425649885415445298</p>
+            <span>Nazwa3</span>
+        </div>
+        <div>
+            <p>12564984875298</p>
+            <span>Nazwa4</span>
+        </div>
+        <div>
+            <p>1256494488asdasd</p>
+            <span>Nazwa5</span>
+        </div>
+        <div>
+            <p>1256485415445298</p>
+            <span>Nazwa6</span>
+        </div>
+        <div>
+            <p>56498875298</p>
+            <span>Nazwa7</span>
+        </div>
+        <div>
+            <p>12564988aasd</p>
+            <span>Nazwa8</span>
+        </div>
+        <div>
+            <p>12566549885415445298</p>
+            <span>Nazwa9</span>
+        </div>
+        <div>
+            <p>12564988asd75298</p>
+            <span>Nazwa10</span>
+        </div>
+        <div>
+            <p>1564988asdasd</p>
+            <span>Nazwa11</span>
+        </div>
+        <div>
+            <p>12549885415445298</p>
+            <span>Nazwa12</span>
+        </div>
+        <div>
+            <p>125649885298</p>
+            <span>Nazwa13</span>
+        </div>
+        <div>
+            <p>12564988asasd</p>
+            <span>Nazwa14</span>
+        </div>
+        <div>
+            <p>1256485415445298</p>
+            <span>Nazwa15</span>
+        </div>
+
+        <script>
+
+        /*Globalna zmienna do trzymania danych*/
+        let ninja = [];
+        ninja.push()
+
+        let getContainers1 = (containers,name) =>{
+
+            let containerElements = document.querySelectorAll(containers);/*Wszystkie kontenery*/
+
+            for(let i=0;i<containerElements.length;i++){
+
+                ninja.push({
+                    id: containerElements[i].querySelector(name).textContent,
+                    sizes: [{
+                        x: containerElements[i].getBoundingClientRect().x,
+                        y: containerElements[i].getBoundingClientRect().y,
+                        top: containerElements[i].getBoundingClientRect().top,
+                        right: containerElements[i].getBoundingClientRect().right,
+                        bottom: containerElements[i].getBoundingClientRect().bottom,
+                        left: containerElements[i].getBoundingClientRect().left,
+                        width: containerElements[i].getBoundingClientRect().width,
+                        height: containerElements[i].getBoundingClientRect().height,
+                    }],
+                });
+
+            }
+            return document.querySelectorAll(containers);
+        };
+
+        let addEventToContainers2 = (containers) => {
+
+            let containerElements = document.querySelectorAll(containers);/*Wszystkie kontenery*/
+            let startTime; /*Data on mouseenter*/
+            let endTime; /*Data on mouseleave*/
+            let timeDiff; /*Różnica czasu*/
+
+            for(let i=0;i<containers.length;i++){
+                containerElements[i].addEventListener('mouseenter',function (){
+                    startTime = new Date();
+                });
+                containerElements[i].addEventListener('mouseleave',function (event){
+                    endTime = new Date();
+                    timeDiff = endTime - startTime;
+
+                    if(timeDiff > 500 && timeDiff < 20000){
+                        for(let j=0;j<ninja.length;j++){
+                            ninja[j].time.push(timeDiff);
+                        }
+                    }
+
+                });
+
+            }
+        }
+
+
+
+        getContainers1('body div','p');
+
+
+
+
+        collectData = function (containers,id,name,log){
+            let data = [];/*Wszystkie dane*/
+            let productContainer = document.querySelectorAll(containers);/*Wszystkie kontenery*/
+            let startTime;/*Data on mouseenter*/
+            let endTime;/*Data on mouseleave*/
+            let timeDiff;/*różnica czasu*/
+
+            for(let i=0;i<productContainer.length;i++){
+                /*Zbieramy dane o kontenerach*/
+                data.push({
+                    id: productContainer[i].querySelector(id).innerText,
+                    name: productContainer[i].querySelector(name).innerText,
+                    time: []
+                });
+
+                /*Event na wjazd myszki - nowa data*/
+                productContainer[i].addEventListener('mouseenter',function (){
+                    startTime = new Date();
+                });
+
+                /*Event na wyjazd myszki - nowa data, liczenie różnicy, dodanie czasów do obiektu, logowanie*/
+                productContainer[i].addEventListener('mouseleave',function (event){
+                    endTime = new Date();
+                    timeDiff = endTime - startTime;
+
+                    /*
+                    Olewamy hovery
+                        1) poniżej 500ms (np ktoś przypadkiem wjedzie podczas scrollowania, albo zapierdziela myszką po ekranie)
+                        2) powyżej 20s (np ktoś poszedł zrobić herbatę ;-)
+                    */
+
+                    /*Wersja z logowaniem do konsoli (log === 1)*/
+                    if(timeDiff > 500 && timeDiff < 20000 && log === 1){
+                        for(let j=0;j<data.length;j++){
+                            if(data[j].id === event.target.querySelector(id).innerText){
+                                data[j].time.push(timeDiff)
+                                console.log('%cID: '+
+                                    '%c'+event.target.querySelector(id).innerText+' %c|'+
+                                    ' %cTytuł: '+
+                                    '%c'+event.target.querySelector(name).innerText+' %c|'+
+                                    ' %cCzas: '+
+                                    '%c'+timeDiff+' %c|'+
+                                    ' %cIlość wejść: '+
+                                    '%c'+data[j].time.length+' %c|'+
+                                    ' %cCzasy: '+
+                                    '%c'+data[j].time,
+                                    'color:red','color:green','color:white','color:red','color:green','color:white','color:red','color:green','color:white','color:red','color:green','color:white','color:red','color:green'
+                                );
+                                /*console.log(data);*/ /*Jak chcemy wyświetlać objekt data za każdym razem*/
+                            }
+                        }
+                    }
+
+                    /*Wersja bez logowania do konsoli (log === 0)*/
+                    if(timeDiff > 500 && timeDiff < 20000 && log === 0){
+                        for(let j=0;j<data.length;j++){
+                            if(data[j].id === event.target.querySelector(id).innerText){
+                                data[j].time.push(timeDiff)
+                            }
+                        }
+                    }
+
+                });
+            }
+            return data;
+        };
+        collectData('div','p','span',1);
+        /*
+        Wywołanie:
+            1) selektor kontenera
+            2) selektor id
+            3) selektor tytułu
+            4) konso-logowanie (bool)
+        */
+        </script>
+    </body>
+</html>
